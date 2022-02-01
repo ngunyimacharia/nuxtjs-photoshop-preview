@@ -15,11 +15,17 @@
 
         <div>
           <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Sign in
+            Upload
           </button>
         </div>
       </form>
 
+    </div>
+  </div>
+
+  <div class="w-4/5 mx-auto my-10 grid grid-cols-3 gap-4">
+    <div class="h-full w-full flex m-5" v-for="image in images" :key="image" >
+      <img :src="image" class="m-auto" />
     </div>
   </div>
 </div>
@@ -27,7 +33,43 @@
 </template>
 
 <script>
+
+
 export default {
-  name: 'IndexPage'
+  name: 'IndexPage',
+  data(){
+    return {
+      cloudinaryFile:null,
+      images:[]
+    };
+  },
+  mounted(){
+    this.cloudinaryFile = {
+        public_id: "nuxtjs-photoshop-preview/Cld_Sample_PSD"
+    };
+  },
+  watch:{
+    cloudinaryFile(){
+      this.getLayers();
+    }
+  },
+  methods:{
+    async getLayers(){
+      let count = 0;
+      let resp;
+      do{
+        count++;
+        let url =  this.$cloudinary.image.url(
+          `${this.cloudinaryFile.public_id}.jpg`,
+          {page:count}
+        );
+        resp = await fetch(url);
+        if(resp.ok){
+          setTimeout(() => this.images.push(url), count * 0);
+        }
+      }while(resp.ok);
+      console.log(this.images);
+    }
+  }
 }
 </script>
