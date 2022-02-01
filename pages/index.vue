@@ -79,7 +79,7 @@ export default {
         );
         resp = await fetch(url);
         if(resp.ok){
-          setTimeout(() => this.images.push(url), count * 0);
+          this.images.push(url);
         }
       }while(resp.ok);
       console.log(this.images);
